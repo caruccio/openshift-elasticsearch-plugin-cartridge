@@ -1,26 +1,38 @@
 OpenShift ElasticSearch Cartridge
 =================================
-Downloadable ElasticSearch cartridge for OpenShift.
+Cartridge ElasticSearch para a plataforma Getup Cloud OpenShift
 
-To create your scalable ElasticSearch app, run:
+Para criar sua aplicação ElasticSearch na getup, primeiro vcê precisa registra-se na plataforma.
+Vá em http://getupcloud.com/#/sign-up e faça seu cadastro. Você recebe gratuitamente 750hs para testar a plataforma.
 
-    rhc app create <your app name> http://cartreflect-claytondev.rhcloud.com/github/ncdc/openshift-elasticsearch-cartridge -s
+Utilizando a ferramenta rhc, execute no terminal:
 
-**NOTE:** your app currently must be a scalable app or this cartridge will not run.
+```
+rhc app-create elasticsearch http://reflector-getupcloud.getup.io/github/getupcloud/openshift-elasticsearch-cartridge --scaling
+```
 
+**NOTA:** sua aplicação precisa ser escalável, mesmo que restrita a apenas um gear.
 
-Adding additional cluster nodes
-===============================
-To add more nodes to the cluster, simply add more gears:
+Adicionando nodes ao cluster
+============================
+Para adicionar novos nodes ao cluster, simplesmente adicione gears a sua aplicação:
 
-    rhc cartridge scale -a <your app name> elasticsearch <number of total gears you want>
-
+```
+rhc cartridge-scale -a elasticsearch elasticsearch <número-de-gears>
+```
 
 Plugins
 =======
-To install ElasticSearch plugins, edit the `plugins.txt` file, commit, and push your changes.
+Para instalar plugins, edite o arquivo `plugins.txt` e publique as alterações. O arquivo possui alguns exemplos
+prontos, basta descomentar as linhas desejadas.
 
+```
+cd elasticsearch
+vim plugins.txt
+git commit -a -m 'Incluindo plugin XXX'
+git push
+```
 
-License
+Licença
 =======
-This project is licensed under the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).
+Este projeto é licenciado sob [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).
