@@ -2,8 +2,9 @@ OpenShift ElasticSearch Cartridge
 =================================
 Cartridge ElasticSearch para a plataforma Getup Cloud OpenShift
 
-Para criar sua aplicação ElasticSearch na getup, primeiro vcê precisa registra-se na plataforma.
-Vá em http://getupcloud.com/#/sign-up e faça seu cadastro. Você recebe gratuitamente 750hs para testar a plataforma.
+Para criar sua aplicação ElasticSearch, primeiro vcê precisa registrar-se na Getup.
+Acesse http://getupcloud.com/#/sign-up e faça seu cadastro.
+Você recebe gratuitamente 750hs para testar a plataforma.
 
 Utilizando a ferramenta rhc, execute no terminal:
 
