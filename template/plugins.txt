@@ -8,6 +8,28 @@
 ## Ex:
 ##   myplugin=https://mysite.com/elasticsearch/my-awesome-plugin.zip
 ##
+## To install a plugin from a zip file, simply place the file inside dir
+## plugins/ and git add+commit it. No need to do place configs here.
+##
+## Configuration is build on-the-fly and starts if contents from file
+## config/elasticsearch.yml.erb, concatenated if any other file found in that
+## same dir (except for logging.yml and elasticsearch.in.sh). Files ending with
+## .erb will be pre-processed using ruby's erb command.
+##
+################################################################################
+
+## Description:
+##   The elasticsearch-jetty plugin brings full power of Jetty and adds
+##   several new features to elasticsearch. With this plugin elasticsearch can now
+##   handle SSL connections, support basic authentication, and log all or some
+##   incoming requests in plain text or json formats.
+##
+## URL:
+##   http://www.emergi.net/elasticsearch/plugins.html
+
+## Uncomment line below to install this plugin
+## You also need to edit file config/jetty.yml
+#jetty=https://s3.amazonaws.com/www.emergi.net/elasticsearch/plugins/elasticsearch-jetty-1.0.0.zip
 
 ## Description:
 ##   ElasticSearch-head is a web front end for browsing and

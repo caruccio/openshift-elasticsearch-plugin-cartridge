@@ -1,4 +1,4 @@
-##################### ElasticSearch Configuration Example #####################
+##################### Elasticsearch Configuration Example #####################
 
 # This file contains an overview of various configuration settings,
 # targeted at operations staff. Application developers should
@@ -7,7 +7,7 @@
 # The installation procedure is covered at
 # <http://elasticsearch.org/guide/en/elasticsearch/reference/current/setup.html>.
 #
-# ElasticSearch comes with reasonable defaults for most settings,
+# Elasticsearch comes with reasonable defaults for most settings,
 # so you can try it out without bothering with configuration.
 #
 # Most of the time, these defaults are just fine for running a production
@@ -22,7 +22,6 @@
 
 # For information on supported formats and syntax for the config file, see
 # <http://elasticsearch.org/guide/en/elasticsearch/reference/current/setup-configuration.html>
-
 
 ################################### Cluster ###################################
 
@@ -72,8 +71,10 @@ node.name: ${OPENSHIFT_GEAR_UUID}
 # node.data: false
 
 # Use the Cluster Health API [http://localhost:9200/_cluster/health], the
-# Node Info API [http://localhost:9200/_cluster/nodes] or GUI tools
-# such as <http://github.com/lukas-vlcek/bigdesk> and
+# Node Info API [http://localhost:9200/_nodes] or GUI tools
+# such as <http://www.elasticsearch.org/overview/marvel/>,
+# <http://github.com/karmi/elasticsearch-paramedic>,
+# <http://github.com/lukas-vlcek/bigdesk> and
 # <http://mobz.github.com/elasticsearch-head> to inspect the cluster state.
 
 # A node can have generic attributes associated with it, which can later be used
@@ -128,7 +129,7 @@ node.name: ${OPENSHIFT_GEAR_UUID}
 # The "number_of_replicas" can be increased or decreased anytime,
 # by using the Index Update Settings API.
 #
-# ElasticSearch takes care about load balancing, relocating, gathering the
+# Elasticsearch takes care about load balancing, relocating, gathering the
 # results from nodes, etc. Experiment with different settings to fine-tune
 # your setup.
 
@@ -174,7 +175,7 @@ path.plugins: ${OPENSHIFT_DATA_DIR}/elasticsearch-plugins
 
 ################################### Memory ####################################
 
-# ElasticSearch performs poorly when JVM starts swapping: you should ensure that
+# Elasticsearch performs poorly when JVM starts swapping: you should ensure that
 # it _never_ swaps.
 #
 # Set this property to true to lock the memory:
@@ -183,15 +184,15 @@ path.plugins: ${OPENSHIFT_DATA_DIR}/elasticsearch-plugins
 
 # Make sure that the ES_MIN_MEM and ES_MAX_MEM environment variables are set
 # to the same value, and that the machine has enough memory to allocate
-# for ElasticSearch, leaving enough memory for the operating system itself.
+# for Elasticsearch, leaving enough memory for the operating system itself.
 #
-# You should also make sure that the ElasticSearch process is allowed to lock
+# You should also make sure that the Elasticsearch process is allowed to lock
 # the memory, eg. by using `ulimit -l unlimited`.
 
 
 ############################## Network And HTTP ###############################
 
-# ElasticSearch, by default, binds itself to the 0.0.0.0 address, and listens
+# Elasticsearch, by default, binds itself to the 0.0.0.0 address, and listens
 # on port [9200-9300] for HTTP traffic and on port [9300-9400] for node-to-node
 # communication. (the range means that if the port is busy, it will automatically
 # try the next port).
@@ -203,8 +204,10 @@ network.bind_host: ${OPENSHIFT_ELASTICSEARCH_IP}
 # Set the address other nodes will use to communicate with this node. If not
 # set, it is automatically derived. It must point to an actual IP address.
 #
+<% if ENV['SCALABLE'] == "1" %>
 network.publish_host: ${PUBLISH_HOST}
 transport.publish_port: ${OPENSHIFT_ELASTICSEARCH_TRANSPORT_PROXY_PORT}
+<% end %>
 
 # Set both 'bind_host' and 'publish_host':
 #
@@ -229,7 +232,6 @@ transport.publish_port: ${OPENSHIFT_ELASTICSEARCH_TRANSPORT_PROXY_PORT}
 # Disable HTTP completely:
 #
 # http.enabled: false
-
 
 ################################### Gateway ###################################
 
@@ -297,8 +299,8 @@ transport.publish_port: ${OPENSHIFT_ELASTICSEARCH_TRANSPORT_PROXY_PORT}
 # and master node is elected. Multicast discovery is the default.
 
 # Set to ensure a node sees N other master eligible nodes to be considered
-# operational within the cluster. Set this option to a higher value (2-4)
-# for large clusters (>3 nodes):
+# operational within the cluster. Its recommended to set it to a higher value
+# than 1 when running more than 2 nodes in the cluster.
 #
 # discovery.zen.minimum_master_nodes: 1
 
@@ -334,6 +336,17 @@ discovery.zen.ping.unicast.hosts: ${OPENSHIFT_ELASTICSEARCH_CLUSTER}
 # See <http://elasticsearch.org/tutorials/elasticsearch-on-ec2/>
 # for a step-by-step tutorial.
 
+# GCE discovery allows to use Google Compute Engine API in order to perform discovery.
+#
+# You have to install the cloud-gce plugin for enabling the GCE discovery.
+#
+# For more information, see <https://github.com/elasticsearch/elasticsearch-cloud-gce>.
+
+# Azure discovery allows to use Azure API in order to perform discovery.
+#
+# You have to install the cloud-azure plugin for enabling the Azure discovery.
+#
+# For more information, see <https://github.com/elasticsearch/elasticsearch-cloud-azure>.
 
 ################################## Slow Log ##################################
 
@@ -356,10 +369,10 @@ discovery.zen.ping.unicast.hosts: ${OPENSHIFT_ELASTICSEARCH_CLUSTER}
 
 ################################## GC Logging ################################
 
-#monitor.jvm.gc.ParNew.warn: 1000ms
-#monitor.jvm.gc.ParNew.info: 700ms
-#monitor.jvm.gc.ParNew.debug: 400ms
+#monitor.jvm.gc.young.warn: 1000ms
+#monitor.jvm.gc.young.info: 700ms
+#monitor.jvm.gc.young.debug: 400ms
 
-#monitor.jvm.gc.ConcurrentMarkSweep.warn: 10s
-#monitor.jvm.gc.ConcurrentMarkSweep.info: 5s
-#monitor.jvm.gc.ConcurrentMarkSweep.debug: 2s
+#monitor.jvm.gc.old.warn: 10s
+#monitor.jvm.gc.old.info: 5s
+#monitor.jvm.gc.old.debug: 2s

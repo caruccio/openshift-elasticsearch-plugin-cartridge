@@ -1,41 +1,11 @@
 #!/bin/bash -e
 
 source $OPENSHIFT_CARTRIDGE_SDK_BASH
-
-PID_FILE=$OPENSHIFT_ELASTICSEARCH_DIR/run/elasticsearch.pid
-
-function _install_plugins()
-{
-  local PLUGIN_CMD="$OPENSHIFT_ELASTICSEARCH_DIR/usr/bin/plugin -Des.path.plugins=$OPENSHIFT_DATA_DIR/elasticsearch-plugins"
-
-  local old_plugins=$($PLUGIN_CMD --list | awk '/-/{print $2}' | xargs)
-  if [ -n "$old_plugins"  -a "$old_plugins" != "No" ]; then #ARGH!
-    echo "Removing old ElasticSearch plugins..."
-    for plugin in $old_plugins; do
-      $PLUGIN_CMD --remove $plugin
-    done
-  fi
-
-  echo "Installing ElasticSearch plugins..."
-
-  local plugins="$(grep -v '^#' $OPENSHIFT_REPO_DIR/plugins.txt 2>/dev/null | xargs)"
-
-  if [ "${plugins}" ]; then
-    for plugin in ${plugins}; do
-      local name=$(echo $plugin | cut -f 1 -d =)
-      local url=$(echo $plugin | cut -f 2 -d =)
-      if [ "$name" == "$url" ]; then
-        $PLUGIN_CMD --install $name
-      else
-        $PLUGIN_CMD --url $url --install $name
-      fi
-    done
-  fi
-}
+source $OPENSHIFT_ELASTICSEARCH_DIR/lib/util
 
 function _is_running() {
-  if [ -f $PID_FILE ]; then
-    local zpid=$(cat $PID_FILE 2> /dev/null)
+  if [ -f $ES_PID_FILE ]; then
+    local zpid=$(cat $ES_PID_FILE 2> /dev/null)
     local myid=$(id -u)
     if `ps -opid,args --pid $zpid 2>&1 &> /dev/null`; then
       return 0
@@ -51,9 +21,14 @@ function start() {
     return 0
   fi
 
-  export PUBLISH_HOST=$(python -c "import socket; print socket.gethostbyname('$OPENSHIFT_GEAR_DNS')")
+  _build_config
 
-  $OPENSHIFT_ELASTICSEARCH_DIR/usr/bin/elasticsearch -p $PID_FILE
+  echo "Starting ElasticSearch"
+  export PUBLISH_HOST=$(python -c "import socket; print socket.gethostbyname('`hostname`')")
+  export ES_HEAP_SIZE="`_es_heap_size`"
+  export ES_INCLUDE="$OPENSHIFT_REPO_DIR/config/elasticsearch.in.sh"
+
+  $OPENSHIFT_ELASTICSEARCH_DIR/usr/bin/elasticsearch -d -p $ES_PID_FILE -D "es.path.conf=$ES_CONFIG_DIR"
 }
 
 function stop() {
@@ -62,8 +37,9 @@ function stop() {
     return 0
   fi
 
-  if [ -f $PID_FILE ]; then
-    local zpid=$(cat $PID_FILE 2> /dev/null)
+  echo "Stopping ElasticSearch"
+  if [ -f $ES_PID_FILE ]; then
+    local zpid=$(cat $ES_PID_FILE 2> /dev/null)
   fi
 
   if [ -n $zpid ]; then
