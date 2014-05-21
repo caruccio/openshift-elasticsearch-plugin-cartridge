@@ -1,39 +1,43 @@
 OpenShift ElasticSearch Cartridge
 =================================
-Cartridge ElasticSearch para a plataforma Getup Cloud OpenShift
+Downloadable ElasticSearch cartridge for OpenShift.
 
-Para criar sua aplicação ElasticSearch, primeiro vcê precisa registrar-se na Getup.
-Acesse http://getupcloud.com/#/sign-up e faça seu cadastro.
-Você recebe gratuitamente 750hs para testar a plataforma.
+To create your ElasticSearch app, run:
 
-Utilizando a ferramenta rhc, execute no terminal:
+    rhc app create <your app name> http://cartreflect-claytondev.rhcloud.com/github/ncdc/openshift-elasticsearch-cartridge
 
-```
-rhc app-create elasticsearch http://reflector-getupcloud.getup.io/github/getupcloud/openshift-elasticsearch-cartridge --scaling
-```
+If you want to create a ElasticSearch cluster, append the flag `--scaling`:
 
-**NOTA:** sua aplicação precisa ser escalável, mesmo que restrita a apenas um gear.
+    rhc app create <your app name> http://cartreflect-claytondev.rhcloud.com/github/ncdc/openshift-elasticsearch-cartridge --scaling
 
-Adicionando nodes ao cluster
-============================
-Para adicionar novos nodes ao cluster, simplesmente adicione gears a sua aplicação:
 
-```
-rhc cartridge-scale -a elasticsearch elasticsearch <número-de-gears>
-```
+Adding additional cluster nodes
+===============================
+To add more nodes to the cluster, simply add more gears:
+
+    rhc cartridge scale -a <your app name> elasticsearch <number of total gears you want>
+
 
 Plugins
 =======
-Para instalar plugins, edite o arquivo `plugins.txt` e publique as alterações. O arquivo possui alguns exemplos
-prontos, basta descomentar as linhas desejadas.
+To install ElasticSearch plugins, edit the `plugins.txt` file, commit, and push your changes.
 
-```
-cd elasticsearch
-vim plugins.txt
-git commit -a -m 'Incluindo plugin XXX'
-git push
-```
+    cd elasticsearch
+    vim plugins.txt
+    git commit -a -m 'Incluindo plugin XXX'
+    git push
 
-Licença
+You can also install plugins from a .zip file. Simply place it inside dir `plugins/`, git add, commit and push.
+
+Configuration
+=============
+
+Configuration is build on-the-fly and starts with contents from file
+config/elasticsearch.yml.erb, concatenated with any other file found in that
+same dir (except for logging.yml and elasticsearch.in.sh). Files ending with
+.erb will be pre-processed using ruby's erb command.
+
+
+License
 =======
-Este projeto é licenciado sob [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).
+This project is licensed under the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).
