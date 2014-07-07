@@ -5,12 +5,13 @@ Description: "ElasticSearch"
 Version: 1.1.1
 License: Apache
 Vendor: elasticsearch.org
-Cartridge-Version: 0.0.2
-Cartridge-Vendor: julianandandy
+Cartridge-Version: 0.0.1
+Cartridge-Vendor: caruccio
 
 Categories:
-  - web_framework
   - service
+  - database
+  - embedded
 
 Provides:
   - elasticsearch
@@ -30,7 +31,7 @@ Subscribes:
 
 Scaling:
   Min: 1
-  Max: -1
+  Max: 1
 
 Endpoints:
   - Private-IP-Name:   IP
@@ -39,9 +40,6 @@ Endpoints:
     Public-Port-Name:  PROXY_PORT
     Protocols:
     - http
-    Mappings:
-    - Frontend: ''
-      Backend: ''
 
   - Private-IP-Name:   IP
     Private-Port-Name: TRANSPORT_PORT
